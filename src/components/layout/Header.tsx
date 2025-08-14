@@ -4,7 +4,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="/" className="group inline-flex items-center gap-2">
           <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow" />
-          <span className="text-lg font-semibold tracking-tight">STAMPINATOR</span>
+          <span className="text-lg font-semibold tracking-tight">STAMPINATOR 🖋️</span>
         </a>
 
         <nav className="hidden items-center gap-6 sm:flex">
