@@ -1,14 +1,17 @@
-"use client"
-import { products } from "@/lib/products";
+"use client";
+
+import * as React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { products } from "@/lib/products";
 
-interface Props {
-  params: { id: string };
-}
+type Params = { id: string };
 
-export default function ProductPage({ params }: Props) {
-  const product = products.find((p) => p.id === Number(params.id));
+export default function ProductPage({ params }: { params: Promise<Params> }) {
+  const { id } = React.use(params);           // ⬅️ unwrap the Promise
+  const productId = Number(id);
+
+  const product = products.find((p) => p.id === productId);
   if (!product) return notFound();
 
   return (
@@ -19,6 +22,7 @@ export default function ProductPage({ params }: Props) {
           alt={product.name}
           width={600}
           height={500}
+          priority
           className="rounded-lg object-cover"
         />
         <div>
@@ -37,7 +41,7 @@ export default function ProductPage({ params }: Props) {
           </div>
 
           <button
-            onClick={() => window.location.href = `/designer?productId=${product.id}`}
+            onClick={() => (window.location.href = `/designer?productId=${product.id}`)}
             className="mt-6 rounded bg-emerald-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-emerald-400"
           >
             Start Designing
