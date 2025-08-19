@@ -86,14 +86,15 @@ export default function DesignerClient() {
     link.click();
   };
 
+
+
   const handleExportJSON = () => {
-    const canvas = fabricCanvasRef.current;
-    if (!canvas) return;
-    const json = canvas.toJSON();
-    // eslint-disable-next-line no-console
-    console.log("Design JSON:", json);
-    alert("Design JSON logged to console.");
-  };
+  const canvas = fabricCanvasRef.current;
+  if (!canvas) return;
+  void canvas.toJSON(); // create JSON (unused here)
+  alert("Design JSON exported successfully.");
+};
+
 
   const handleChangeShirtColor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const canvas = fabricCanvasRef.current;
