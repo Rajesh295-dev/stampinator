@@ -1,22 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { products } from "@/lib/products";
 
+type SortBy = "price-asc" | "price-desc";
+const isSortBy = (v: string): v is SortBy => v === "price-asc" || v === "price-desc";
+
 export default function CatalogPage() {
   const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | null>(null);
+  const [sortBy, setSortBy] = useState<SortBy | null>(null);
 
-  const filteredProducts = products
-    .filter((p) => !selectedColor || p.colors.includes(selectedColor))
-    .sort((a, b) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      return 0;
-    });
+  const filteredProducts = useMemo(() => {
+    const base = selectedColor
+      ? products.filter((p) => p.colors.includes(selectedColor))
+      : products.slice();
+
+    if (sortBy === "price-asc") return base.sort((a, b) => a.price - b.price);
+    if (sortBy === "price-desc") return base.sort((a, b) => b.price - a.price);
+    return base;
+  }, [selectedColor, sortBy]);
+
+  const allColors = useMemo(
+    () => Array.from(new Set(products.flatMap((p) => p.colors))),
+    []
+  );
 
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
@@ -25,19 +35,21 @@ export default function CatalogPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-6">
         <select
-          value={selectedColor || ""}
+          value={selectedColor ?? ""}
           onChange={(e) => setSelectedColor(e.target.value || null)}
           className="rounded bg-neutral-900 border border-neutral-700 p-2"
         >
           <option value="">All Colors</option>
-          {[...new Set(products.flatMap((p) => p.colors))].map((color) => (
-            <option key={color} value={color}>{color}</option>
+          {allColors.map((color) => (
+            <option key={color} value={color}>
+              {color}
+            </option>
           ))}
         </select>
 
         <select
-          value={sortBy || ""}
-          onChange={(e) => setSortBy(e.target.value as any)}
+          value={sortBy ?? ""}
+          onChange={(e) => setSortBy(isSortBy(e.target.value) ? e.target.value : null)}
           className="rounded bg-neutral-900 border border-neutral-700 p-2"
         >
           <option value="">Sort By</option>
@@ -59,6 +71,7 @@ export default function CatalogPage() {
               width={400}
               height={300}
               className="rounded-lg object-cover"
+              priority={false} // set to true if this image is above-the-fold
             />
             <h2 className="mt-4 text-lg font-semibold">{product.name}</h2>
             <p className="text-sm text-neutral-400">${product.price}</p>
@@ -66,11 +79,14 @@ export default function CatalogPage() {
             {/* Color swatches */}
             <div className="flex gap-2 mt-2">
               {product.colors.map((color) => (
-                <div
+                <button
+                  type="button"
                   key={color}
-                  className="w-6 h-6 rounded-full border cursor-pointer"
+                  className="w-6 h-6 rounded-full border"
                   style={{ backgroundColor: color.toLowerCase() }}
                   onClick={() => setSelectedColor(color)}
+                  aria-label={`Filter by ${color}`}
+                  title={`Filter by ${color}`}
                 />
               ))}
             </div>

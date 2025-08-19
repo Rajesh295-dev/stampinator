@@ -1,3 +1,4 @@
+import Link from "next/link";
 import MockupCard from "./MockupCard";
 
 export default function Hero() {
@@ -14,18 +15,18 @@ export default function Hero() {
             print-ready outputs — from a single, blazing-fast web app.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a
+            <Link
               href="/designer"
               className="rounded-2xl bg-emerald-500 px-4 py-2.5 text-sm font-medium text-neutral-950 hover:bg-emerald-400"
             >
               Open Designer
-            </a>
-            <a
+            </Link>
+            <Link
               href="/catalog"
               className="rounded-2xl border border-neutral-800 px-4 py-2.5 text-sm text-neutral-200 hover:border-neutral-700 hover:text-white"
             >
               Browse Catalog
-            </a>
+            </Link>
           </div>
           <div className="mt-6 flex items-center gap-4 text-xs text-neutral-400">
             <span>SVG/PNG uploads</span>
